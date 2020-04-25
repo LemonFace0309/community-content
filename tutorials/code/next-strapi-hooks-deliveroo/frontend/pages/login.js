@@ -1,6 +1,6 @@
 /* /pages/signin.js */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import {
   Container,
@@ -13,13 +13,14 @@ import {
   Input,
 } from "reactstrap";
 import { login, withAuthSync } from "../lib/auth";
+import AuthContext from "../context/authContext";
 
 function Login(props) {
   const [data, updateData] = useState({ identifier: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const router = useRouter();
-
+  const auth = useContext(AuthContext);
   useEffect(() => {
     if (props.user != undefined) {
       router.push("/"); // redirect if you're already logged in
@@ -85,7 +86,11 @@ function Login(props) {
                       onClick={() => {
                         setLoading(true);
                         login(data.identifier, data.password)
-                          .then(() => setLoading(false))
+                          .then((res) => {
+                            setLoading(false);
+                            // set authed User in global context to update header/app state
+                            auth.setUser(res.data.user);
+                          })
                           .catch((error) => {
                             setError(error.response.data);
                             setLoading(false);

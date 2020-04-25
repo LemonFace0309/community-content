@@ -2,21 +2,52 @@
 import React from "react";
 import App from "next/app";
 import Head from "next/head";
-
+import Cookie from "js-cookie";
+import fetch from "isomorphic-fetch";
+import Layout from "../components/Layout";
+import AuthContext from "../context/authContext.js";
 export default class MyApp extends App {
-  static async getInitialProps({ Component, router, ctx }) {
-    let pageProps = {};
+  state = {
+    user: null,
+  };
 
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
+  componentDidMount() {
+    const token = Cookie.get("token");
+    console.log("component did mount");
+    if (token) {
+      // authenticate the token on the server and place set user object
+      fetch("http://localhost:1337/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then(async (res) => {
+        // if res comes back not valid, token is not valid
+        // delete the token and log the user out on client
+        if (!res.ok) {
+          Cookie.remove("token");
+          this.setState({ user: null });
+          return null;
+        }
+        const user = await res.json();
+        this.setUser(user);
+      });
     }
-    return { pageProps };
   }
-
+  setUser = (user) => {
+    console.log(user);
+    this.setState({ user });
+  };
   render() {
     const { Component, pageProps } = this.props;
+
     return (
-      <>
+      <AuthContext.Provider
+        value={{
+          user: this.state.user,
+          isAuthenticated: !!this.state.user,
+          setUser: this.setUser,
+        }}
+      >
         <Head>
           <link
             rel="stylesheet"
@@ -26,8 +57,10 @@ export default class MyApp extends App {
           />
         </Head>
 
-        <Component {...pageProps} />
-      </>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </AuthContext.Provider>
     );
   }
 }

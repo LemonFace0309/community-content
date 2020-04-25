@@ -1,16 +1,19 @@
 /* /components/Layout.js */
 
-import React from "react";
+import React, { useContext } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { Container, Nav, NavItem } from "reactstrap";
-//import HOC withAuthSync and logout method
-//wrap page in withAuthSync to access token and user props
+import { useFetchUser } from "../lib/user";
 import { logout } from "../lib/auth";
-
+import AuthContext from "../context/authContext";
 const Layout = (props) => {
+  //   const { user, loading } = useFetchUser({ required: true });
+
   const title = "Welcome to Nextjs";
-  const { children, token, user } = props;
+
+  const { user, setUser } = useContext(AuthContext);
+  console.log(user);
   return (
     <div>
       <Head>
@@ -45,8 +48,8 @@ const Layout = (props) => {
           </NavItem>
 
           <NavItem className="ml-auto">
-            {token ? (
-              <h5>{user}</h5>
+            {user ? (
+              <h5>{user.username}</h5>
             ) : (
               <Link href="/signup">
                 <a className="nav-link"> Sign up</a>
@@ -54,9 +57,15 @@ const Layout = (props) => {
             )}
           </NavItem>
           <NavItem>
-            {token ? (
+            {user ? (
               <Link href="/">
-                <a className="nav-link" onClick={logout}>
+                <a
+                  className="nav-link"
+                  onClick={() => {
+                    logout();
+                    setUser(null);
+                  }}
+                >
                   Logout
                 </a>
               </Link>
@@ -68,7 +77,7 @@ const Layout = (props) => {
           </NavItem>
         </Nav>
       </header>
-      <Container>{children}</Container>
+      <Container>{props.children}</Container>
     </div>
   );
 };

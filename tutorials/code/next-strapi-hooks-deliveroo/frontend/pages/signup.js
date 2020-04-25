@@ -1,6 +1,6 @@
 /* /pages/signup.js */
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import {
   Container,
@@ -13,12 +13,13 @@ import {
   Input,
 } from "reactstrap";
 import { registerUser } from "../lib/auth";
+import AuthContext from "../context/authContext";
 
 const SignUp = () => {
   const [data, setData] = useState({ email: "", username: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({});
-
+  const auth = useContext(AuthContext);
   return (
     <Container>
       <Row>
@@ -94,7 +95,11 @@ const SignUp = () => {
                       onClick={() => {
                         setLoading(true);
                         registerUser(data.username, data.email, data.password)
-                          .then(() => setLoading(false))
+                          .then((res) => {
+                            // set authed user in global context object
+                            auth.setUser(res.data.user);
+                            setLoading(false);
+                          })
                           .catch((error) => {
                             setError(error.response.data);
                             setLoading(false);

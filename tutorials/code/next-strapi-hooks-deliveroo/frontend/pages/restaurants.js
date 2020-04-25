@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/react-hooks";
 import { useRouter } from "next/router";
 import { gql } from "apollo-boost";
 import withData from "../lib/apollo";
+import { useFetchUser } from "../lib/user";
 
 import {
   Button,
@@ -38,7 +39,10 @@ function Restaurants(props) {
   const { loading, error, data } = useQuery(GET_RESTAURANT_DISHES, {
     variables: { id: router.query.id },
   });
-  const { context, isAuthenticated } = props;
+
+  //   const { context, isAuthenticated } = props;
+  const { user } = useFetchUser({ required: true });
+
   if (error) return "Error Loading Dishes";
   if (loading) return <h1>Loading ...</h1>;
   if (data.restaurant) {
@@ -48,8 +52,8 @@ function Restaurants(props) {
         <h1>{restaurant.name}</h1>
         <Row>
           {restaurant.dishes.map((res) => (
-            <Col xs="6" sm="4" style={{ padding: 0 }}>
-              <Card style={{ margin: "0 10px" }} key={res._id}>
+            <Col xs="6" sm="4" style={{ padding: 0 }} key={res.id}>
+              <Card style={{ margin: "0 10px" }}>
                 <CardImg
                   top={true}
                   style={{ height: 250 }}
