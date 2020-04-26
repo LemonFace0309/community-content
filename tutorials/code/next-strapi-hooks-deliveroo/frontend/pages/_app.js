@@ -5,7 +5,7 @@ import Head from "next/head";
 import Cookie from "js-cookie";
 import fetch from "isomorphic-fetch";
 import Layout from "../components/Layout";
-import AuthContext from "../context/authContext.js";
+import AppContext from "../context/appContext";
 export default class MyApp extends App {
   state = {
     user: null,
@@ -41,7 +41,7 @@ export default class MyApp extends App {
     const { Component, pageProps } = this.props;
 
     return (
-      <AuthContext.Provider
+      <AppContext.Provider
         value={{
           user: this.state.user,
           isAuthenticated: !!this.state.user,
@@ -60,7 +60,7 @@ export default class MyApp extends App {
         <Layout>
           <Component {...pageProps} />
         </Layout>
-      </AuthContext.Provider>
+      </AppContext.Provider>
     );
   }
 }
