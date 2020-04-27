@@ -1,9 +1,12 @@
 /* /pages/restaurants.js */
+import { useContext } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { useRouter } from "next/router";
 import { gql } from "apollo-boost";
 import withData from "../lib/apollo";
 import { useFetchUser } from "../lib/user";
+import Cart from "../components/Cart/Cart";
+import AppContext from "../context/appContext";
 
 import {
   Button,
@@ -34,14 +37,12 @@ const GET_RESTAURANT_DISHES = gql`
   }
 `;
 
-function Restaurants(props) {
+function Restaurants() {
+  const appContext = useContext(AppContext);
   const router = useRouter();
   const { loading, error, data } = useQuery(GET_RESTAURANT_DISHES, {
     variables: { id: router.query.id },
   });
-
-  //   const { context, isAuthenticated } = props;
-  const { user } = useFetchUser({ required: true });
 
   if (error) return "Error Loading Dishes";
   if (loading) return <h1>Loading ...</h1>;
@@ -64,7 +65,11 @@ function Restaurants(props) {
                   <CardText>{res.description}</CardText>
                 </CardBody>
                 <div className="card-footer">
-                  <Button outline color="primary">
+                  <Button
+                    outline
+                    color="primary"
+                    onClick={() => appContext.addItem(res)}
+                  >
                     + Add To Cart
                   </Button>
 
@@ -92,6 +97,11 @@ function Restaurants(props) {
               </Card>
             </Col>
           ))}
+          <Col xs="3" style={{ padding: 0 }}>
+            <div>
+              <Cart />
+            </div>
+          </Col>
         </Row>
       </>
     );

@@ -6,14 +6,14 @@ import Link from "next/link";
 import { Container, Nav, NavItem } from "reactstrap";
 import { useFetchUser } from "../lib/user";
 import { logout } from "../lib/auth";
-import AuthContext from "../context/authContext";
+import AuthContext from "../context/appContext";
 const Layout = (props) => {
   //   const { user, loading } = useFetchUser({ required: true });
 
   const title = "Welcome to Nextjs";
 
   const { user, setUser } = useContext(AuthContext);
-  console.log(user);
+
   return (
     <div>
       <Head>
