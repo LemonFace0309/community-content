@@ -78,7 +78,7 @@ function Cart() {
                     <h5 style={{ fontWeight: 100, color: "gray" }}>Total:</h5>
                     <h3>${appContext.cart.total}</h3>
                   </Badge>
-                  {router.pathname != "/checkout" ? (
+                  {router.pathname === "/restaurants" && (
                     <div
                       style={{
                         marginTop: 10,
@@ -91,13 +91,25 @@ function Cart() {
                         </Button>
                       </Link>
                     </div>
-                  ) : null}
+                  )}
                 </div>
-              ) : null
+              ) : (
+                <>
+                  {router.pathname === "/checkout" && (
+                    <small
+                      style={{ color: "blue" }}
+                      onClick={() => window.history.back()}
+                    >
+                      back to restaurant
+                    </small>
+                  )}
+                </>
+              )
             ) : (
               <h5>Login to Order</h5>
             )}
           </div>
+          {console.log(router.pathname)}
         </CardBody>
       </Card>
       <style jsx>{`
