@@ -979,3 +979,22 @@
     - mongodb
   version: beta
 
+  - title: Cook up an online food ordering app with Next.js (React 16.8 w/ hooks), GraphQL, Strapi and Stripe
+  link: 
+  formats:
+    - article
+  language: en
+  date: 2020-07-01
+  authors:
+    - Ryan Belke
+  github_authors:
+    - ryanbelke
+  image_url: https://d2zv2ciw0ln4h1.cloudfront.net/uploads/large_strapi-next-setup_4e6c6b62a9.png
+  topics:
+    - React
+    - Nextjs
+    - Strapi
+    - Stripe
+    - GraphQL
+  version: 1
+
